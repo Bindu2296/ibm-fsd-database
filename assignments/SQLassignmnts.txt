@@ -1,7 +1,12 @@
-1. LIST DEPARTMENT WISE EMPLOYEE COUNT,
-2.LIST DEPARTMENT HAVING SAL> 50K
-3. LIST COUNTRY , DEPT WISE AVG SALARY 
-4.LIST COUNTRY
+1> List department wise employee count
+
+2> List department have salary more than 50000
+
+3> List country,department wise avg salary
+
+4> List country,department have employee count more than 2 ordered
+
+5> List department with employee name contains 'sa' and exists more than one country
 
 
 1.mysql> SELECT DEPARTMENT,COUNT(*) FROM EMPLOYEES GROUP BY DEPARTMENT;
@@ -92,7 +97,19 @@ mysql>  SELECT DEPARTMENT,(SELECT NAME FROM EMPLOYEES WHERE NAME LIKE '%EL%') AS
 
 ============================
 assignment ==SQL Day 2
-===========================
+============================
+
+1>List employee count under each manager  -name,count
+
+2>List customer wise unique products orderd
+
+3>List product wise total order amount
+
+4> List detaills of manager who has highest sales
+
+5>List month wise no of orders placed for each product line
+
+6> List customers who has not placed any order for all products
 
 
 
@@ -124,10 +141,14 @@ assignment ==SQL Day 2
 
 3. mysql>Select P.productname,sum(OD.priceEach) from Products P join OrderDetails OD on P.productCode=OD.productCode group by P.productname;
 
+
+
 4. mysql> Select E.firstName,sum(P.amount) from Employees E join Employees F on E.EmployeeNumber=F.reportsTo
 	join Customers C on C.salesRepEmployeeNumber=F.EmployeeNumber
 	join Payments P on P.customerNumber=C.customerNumber group by E.firstName order by sum(P.amount) desc;
 	select department from employee e join country c on e.country_id=c.country_id where e.name like "da%" and count(select
+
+
 
 5 . mysql>select extract(month from o.orderdate) as month ,count(*)  as totalorders,p.productline from customers c join orders o on c.customernumber=o.customernumber
 	join orderdetails o2 on o2.ordernumber=o.ordernumber join products p  on p.productcode=o2.productcode  group by month,p.productline ;
