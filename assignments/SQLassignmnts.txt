@@ -1,0 +1,136 @@
+1. LIST DEPARTMENT WISE EMPLOYEE COUNT,
+2.LIST DEPARTMENT HAVING SAL> 50K
+3. LIST COUNTRY , DEPT WISE AVG SALARY 
+4.LIST COUNTRY
+
+
+1.mysql> SELECT DEPARTMENT,COUNT(*) FROM EMPLOYEES GROUP BY DEPARTMENT;
++------------+----------+
+| DEPARTMENT | COUNT(*) |
++------------+----------+
+| CSE        |        2 |
+| ECE        |        2 |
+| IT         |        3 |
++------------+----------+
+3 rows in set (0.00 sec)
+
+2.  mysql> SELECT DEPARTMENT,SALARY FROM EMPLOYEES WHERE SALARY>50000;
++------------+--------+
+| DEPARTMENT | SALARY |
++------------+--------+
+| IT         |  60000 |
+| CSE        |  70000 |
++------------+--------+
+2 rows in set (0.00 sec)
+
+3. mysql> SELECT C.NAME,DEPARTMENT,AVG(SALARY) AS SALARY FROM EMPLOYEES JOIN COUNTRY C
+    -> ON COUNTRY_ID=C.ID GROUP BY DEPARTMENT,COUNTRY_ID;
++----------------+------------+--------+
+| NAME           | DEPARTMENT | SALARY |
++----------------+------------+--------+
+| UNITEDKINGDOMS | CSE        |  70000 |
+| USA            | CSE        |  50000 |
+| UNITEDKINGDOMS | ECE        |  32500 |
+| INDIA          | IT         |  20000 |
+| UNITEDKINGDOMS | IT         |  30000 |
+| USA            | IT         |  60000 |
++----------------+------------+--------+
+
+4. mysql> SELECT C.NAME,COUNTRY_ID,DEPARTMENT,COUNT(*)>1 AS COUNT FROM EMPLOYEES INNER JOIN COUNTRY C ON COUNTRY_ID=C.ID GROUP BY DEPARTMENT,COUNTRY_ID ORDER BY DEPARTMENT;
++----------------+------------+------------+-------+
+| NAME           | COUNTRY_ID | DEPARTMENT | COUNT |
++----------------+------------+------------+-------+
+| UNITEDKINGDOMS |          2 | CSE        |     0 |
+| USA            |          4 | CSE        |     0 |
+| UNITEDKINGDOMS |          2 | ECE        |     1 |
+| INDIA          |          1 | IT         |     0 |
+| UNITEDKINGDOMS |          2 | IT         |     0 |
+| USA            |          4 | IT         |     0 |
++----------------+------------+------------+-------+
+
+
+OR
+
+
+
+> SELECT C.NAME,COUNTRY_ID,DEPARTMENT,COUNT(*) FROM EMPLOYEES INNER JOIN COUNTRY C ON COUNTRY_ID=C.ID GROUP BY DEPARTMENT,COUNTRY_ID HAVING COUNT(*)>1 ORDER BY DEPARTMENT;
++----------------+------------+------------+----------+
+| NAME           | COUNTRY_ID | DEPARTMENT | COUNT(*) |
++----------------+------------+------------+----------+
+| UNITEDKINGDOMS |          2 | ECE        |        2 |
++----------------+------------+------------+----------+
+
+
+
+
+5. mysql> SELECT DEPARTMENT,NAME FROM EMPLOYEES WHERE NAME LIKE '%LV%';
++------------+--------+
+| DEPARTMENT | NAME   |
++------------+--------+
+| ECE        | Selvam |
+| IT         | Solvin |
++------------+--------+
+
+
+mysql> SELECT E.DEPARTMENT,COUNT(COUNTRY_ID) FROM EMPLOYEES E INNER JOIN COUNTRY C ON E.COUNTRY_ID=C.ID GROUP BY E.DEPARTMENT HAVING COUNT(COUNTRY_ID)>2;
++------------+-------------------+
+| DEPARTMENT | COUNT(COUNTRY_ID) |
++------------+-------------------+
+| IT         |                 3 |
++------------+-------------------+
+
+mysql>  SELECT DEPARTMENT,(SELECT NAME FROM EMPLOYEES WHERE NAME LIKE '%EL%') AS EMPLOYEES,COUNT(E.COUNTRY_ID) FROM EMPLOYEES E INNER JOIN COUNTRY C ON E.COUNTRY_ID=C.ID GROUP BY E.DEPARTMENT HAVING COUNT(E.COUNTRY_ID)>2;
++------------+-----------+---------------------+
+| DEPARTMENT | EMPLOYEES | COUNT(E.COUNTRY_ID) |
++------------+-----------+---------------------+
+| IT         | Selvam    |                   3 |
++------------+-----------+---------------------+
+
+
+
+------------------------------------------------------------------------------
+
+============================
+assignment ==SQL Day 2
+===========================
+
+
+
+1. mysql> select e.firstname,count(m.reportsTo) from employees e join employees m on e.employeenumber=m.reportsTo group by e.employeenumber,m.reportsTo;
++-----------+--------------------+
+| firstname | count(m.reportsTo) |
++-----------+--------------------+
+| Diane     |                  2 |
+| Mary      |                  4 |
+| William   |                  3 |
+| Gerard    |                  6 |
+| Anthony   |                  6 |
+| Mami      |                  1 |
++-----------+--------------------+
+6 rows in set (0.01 sec)
+
+
+5. mysql> select extract(month from o.orderdate) as month ,count(*)  as totalorders, p.productline from customers c join orders o on c.customernumber = o.customernumber
+	join orderdetails o2 on o2.ordernumber=o.ordernumber join products p on p.productcode = o2.productcode  group by month,p.productline ;
+
+
+
+2. mysql> select distinct(productName),count(c.customerName) from customers c  inner join orders o2 on  c.customerNumber =o2.customerNumber inner join orderdetails o1 on  o1.orderNumber= o2.orderNumber  inner join  products p on p.productCode = o1.productCode;
+
+2. mysql> select count(customerName) from customers where exists (select distinct(p.productName),c.customerName, from customers c  inner join orders o2 on  c.customerNumber =o2.customerNumber inner join orderdetails o1 on  o1.orderNumber= o2.orderNumber  inner join  products p on p.productCode = o1.productCode order by customerName);
+
+
+
+
+3. mysql>Select P.productname,sum(OD.priceEach) from Products P join OrderDetails OD on P.productCode=OD.productCode group by P.productname;
+
+4. mysql> Select E.firstName,sum(P.amount) from Employees E join Employees F on E.EmployeeNumber=F.reportsTo
+	join Customers C on C.salesRepEmployeeNumber=F.EmployeeNumber
+	join Payments P on P.customerNumber=C.customerNumber group by E.firstName order by sum(P.amount) desc;
+	select department from employee e join country c on e.country_id=c.country_id where e.name like "da%" and count(select
+
+5 . mysql>select extract(month from o.orderdate) as month ,count(*)  as totalorders,p.productline from customers c join orders o on c.customernumber=o.customernumber
+	join orderdetails o2 on o2.ordernumber=o.ordernumber join products p  on p.productcode=o2.productcode  group by month,p.productline ;
+
+
+

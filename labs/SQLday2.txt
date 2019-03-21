@@ -1,0 +1,345 @@
+INSERT INTO EMPLOYEES (NAME, AGE, GENDER, SALARY, DESIGNATION, DEPARTMENT, COUNTRY_ID) VALUES('Kelvin',25,'M',20000,'Manager','IT',1);
+
+
+
+#LIST ALL EMPOYEES BELONGS TO IT OR CSE
+mysql> SELECT * FROM EMPLOYEES WHERE DEPARTMENT IN ('IT','CSE');
++----+----------+-----+--------+--------+---------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION   | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+---------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | Manager       | IT         |          1 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer     | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | VP            | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head | IT         |          4 |
+| 11 | Sunil    |  50 | M      |  70000 | President     | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | Manager       | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager       | IT         |          2 |
++----+----------+-----+--------+--------+---------------+------------+------------+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+#UNION & UNION ALL
+
+mysql> SELECT * FROM EMPLOYEES WHERE DEPARTMENT ='IT' UNION SELECT * FROM EMPLOYEES WHERE SALARY>50000;
++----+--------+-----+--------+--------+---------------+------------+------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION   | DEPARTMENT | COUNTRY_ID |
++----+--------+-----+--------+--------+---------------+------------+------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager       | IT         |          1 |
+|  6 | Solvin |  29 | M      |  30000 | Developer     | IT         |          2 |
+|  8 | Mathes |  35 | M      |  60000 | Function Head | IT         |          4 |
+| 12 | Kelvin |  25 | M      |  20000 | Manager       | IT         |          1 |
+| 13 | Melvin |  25 | M      |  20000 | Manager       | IT         |          2 |
+| 11 | Sunil  |  50 | M      |  70000 | President     | CSE        |          2 |
++----+--------+-----+--------+--------+---------------+------------+------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM EMPLOYEES WHERE DEPARTMENT ='IT' UNION ALL SELECT * FROM EMPLOYEES WHERE SALARY>50000;
++----+--------+-----+--------+--------+---------------+------------+------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION   | DEPARTMENT | COUNTRY_ID |
++----+--------+-----+--------+--------+---------------+------------+------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager       | IT         |          1 |
+|  6 | Solvin |  29 | M      |  30000 | Developer     | IT         |          2 |
+|  8 | Mathes |  35 | M      |  60000 | Function Head | IT         |          4 |
+| 12 | Kelvin |  25 | M      |  20000 | Manager       | IT         |          1 |
+| 13 | Melvin |  25 | M      |  20000 | Manager       | IT         |          2 |
+|  8 | Mathes |  35 | M      |  60000 | Function Head | IT         |          4 |
+| 11 | Sunil  |  50 | M      |  70000 | President     | CSE        |          2 |
++----+--------+-----+--------+--------+---------------+------------+------------+
+
+==============================================================================================================
+SUB-QUERIES
+==============================================================================================================
+////EMPLOYEES WHOSE SALARY > AVG SALARY
+
+mysql> SELECT * FROM EMPLOYEES WHERE SALARY > ( SELECT ROUND(AVG(SALARY),2) FROM EMPLOYEES);
++----+----------+-----+--------+--------+---------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION   | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+---------------+------------+------------+
+|  7 | Siddarth |  45 | M      |  50000 | VP            | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head | IT         |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead          | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | President     | CSE        |          2 |
++----+----------+-----+--------+--------+---------------+------------+------------+
+
+//EMPLOYEES WHOSE SALARY > SINTHARA'S SALARY
+
+mysql> SELECT * FROM EMPLOYEES WHERE SALARY > ( SELECT SALARY FROM EMPLOYEES WHERE NAME ="SINTHURA");
++----+----------+-----+--------+--------+---------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION   | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+---------------+------------+------------+
+|  7 | Siddarth |  45 | M      |  50000 | VP            | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head | IT         |          4 |
+| 11 | Sunil    |  50 | M      |  70000 | President     | CSE        |          2 |
+
+
+mysql> SELECT * FROM EMPLOYEES
+    -> E WHERE E.COUNTRY_ID =(SELECT C.ID FROM COUNTRY C WHERE C.NAME="INDIA");
++----+--------+-----+--------+--------+-------------+------------+------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION | DEPARTMENT | COUNTRY_ID |
++----+--------+-----+--------+--------+-------------+------------+------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager     | IT         |          1 |
+| 12 | Kelvin |  25 | M      |  20000 | Manager     | IT         |          1 |
++----+--------+-----+--------+--------+-------------+------------+------------+
+
+//
+mysql> SELECT  E.* , (SELECT C.NAME FROM COUNTRY C WHERE E.COUNTRY_ID=C.ID ) "COUNTRY NAME" FROM EMPLOYEES E
+    -> WHERE E.COUNTRY_ID =(SELECT C.ID FROM COUNTRY C WHERE C.NAME="INDIA");
++----+--------+-----+--------+--------+-------------+------------+------------+--------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION | DEPARTMENT | COUNTRY_ID | COUNTRY NAME |
++----+--------+-----+--------+--------+-------------+------------+------------+--------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager     | IT         |          1 | INDIA        |
+| 12 | Kelvin |  25 | M      |  20000 | Manager     | IT         |          1 | INDIA        |
++----+--------+-----+--------+--------+-------------+------------+------------+--------------+
+2 rows in set (0.00 sec)
+
+
+THE above query(using sub-queries) is same as the below one(using join)...
+
+mysql> SELECT C.NAME,E.* FROM EMPLOYEES
+    -> E INNER JOIN COUNTRY C ON E.COUNTRY_ID = C.ID WHERE E.COUNTRY_ID =(SELECT C.ID FROM COUNTRY C WHERE C.NAME="INDIA");
++-------+----+--------+-----+--------+--------+-------------+------------+------------+
+| NAME  | ID | NAME   | AGE | GENDER | SALARY | DESIGNATION | DEPARTMENT | COUNTRY_ID |
++-------+----+--------+-----+--------+--------+-------------+------------+------------+
+| INDIA |  3 | Kumar  |  25 | M      |  20000 | Manager     | IT         |          1 |
+| INDIA | 12 | Kelvin |  25 | M      |  20000 | Manager     | IT         |          1 |
++-------+----+--------+-----+--------+--------+-------------+------------+------------+
+
+
+//ALL EMPLOYEES with country name india
+
+mysql> SELECT  E.* FROM EMPLOYEES E WHERE EXISTS(SELECT C.ID FROM COUNTRY C WHERE C.ID=E.COUNTRY_ID AND C.NAME="INDIA");
++----+--------+-----+--------+--------+-------------+------------+------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION | DEPARTMENT | COUNTRY_ID |
++----+--------+-----+--------+--------+-------------+------------+------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager     | IT         |          1 |
+| 12 | Kelvin |  25 | M      |  20000 | Manager     | IT         |          1 |
++----+--------+-----+--------+--------+-------------+------------+------------+
+
+
+//ALL EMPLOYEES with country name not india
+
+mysql> SELECT  E.* FROM EMPLOYEES E WHERE EXISTS(SELECT * FROM COUNTRY C WHERE C.ID=E.COUNTRY_ID AND C.NAME !="INDIA");
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | VP                | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head     | IT         |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | President         | CSE        |          2 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT  E.* FROM EMPLOYEES E WHERE NOT EXISTS(SELECT C.ID FROM COUNTRY C WHERE C.ID=E.COUNTRY_ID AND C.NAME="INDIA");
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | VP                | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head     | IT         |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | President         | CSE        |          2 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+7 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+=============================================================================================
+CONDITION ON "ON" ----restriction while joining 
+================================================================================
+
+//EMPLOYEES WHO BELONGS TO INDIA
+
+mysql> SELECT * FROM EMPLOYEES E INNER JOIN COUNTRY C ON E.COUNTRY_ID = C.ID AND C.CODE="IN";
++----+--------+-----+--------+--------+-------------+------------+------------+----+------+-------+---------------------+
+| ID | NAME   | AGE | GENDER | SALARY | DESIGNATION | DEPARTMENT | COUNTRY_ID | ID | CODE | NAME  | UPDATE_TIME         |
++----+--------+-----+--------+--------+-------------+------------+------------+----+------+-------+---------------------+
+|  3 | Kumar  |  25 | M      |  20000 | Manager     | IT         |          1 |  1 | IN   | INDIA | 2019-09-27 17:07:35 |
+| 12 | Kelvin |  25 | M      |  20000 | Manager     | IT         |          1 |  1 | IN   | INDIA | 2019-09-27 17:07:35 |
++----+--------+-----+--------+--------+-------------+------------+------------+----+------+-------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT E.NAME "EMP NAME",C.NAME "COUNTRY NAME" FROM EMPLOYEES E INNER JOIN COUNTRY C ON E.COUNTRY_ID = C.ID AND C.CODE="IN";
++----------+--------------+
+| EMP NAME | COUNTRY NAME |
++----------+--------------+
+| Kumar    | INDIA        |
+| Kelvin   | INDIA        |
++----------+--------------+
+2 rows in set (0.00 sec)
+
+============================================================================================
+UPDATE
+=========================================================================\
+
+mysql> UPDATE EMPLOYEES SET DESIGNATION='ADMIN' WHERE COUNTRY_ID=(SELECT ID FROM COUNTRY WHERE NAME="INDIA");
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 2  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM EMPLOYEES;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | VP                | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head     | IT         |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | President         | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+9 rows in set (0.00 sec)
+
+
+//
+
+mysql> UPDATE EMPLOYEES SET DESIGNATION='TESTER' WHERE DEPARTMENT=(SELECT DNAME FROM DEPARTMENTS WHERE DNAME="CSE");
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM EMPLOYEES;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | TESTER            | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | Function Head     | IT         |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | TESTER            | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+9 rows in set (0.00 sec)
+
+mysql> UPDATE EMPLOYEES SET DESIGNATION='DEVELOPER', DEPARTMENT='CSE' WHERE COUNTRY_ID=(SELECT ID FROM COUNTRY WHERE NAME="USA");
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM EMPLOYEES;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  7 | Siddarth |  45 | M      |  50000 | DEVELOPER         | CSE        |          4 |
+|  8 | Mathes   |  35 | M      |  60000 | DEVELOPER         | CSE        |          4 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | TESTER            | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+
+==========================================
+DELETE
+=========================================
+
+mysql> DELETE FROM EMPLOYEES WHERE COUNTRY_ID=(SELECT ID FROM COUNTRY WHERE NAME="USA");
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> SELECT * FROM EMPLOYEES;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | TESTER            | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+7 rows in set (0.00 sec)
+
+
+==============================================
+CLONING INSERTS
+===================
+mysql> INSERT INTO EMPLOYEE1 SELECT * FROM EMPLOYEES;
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM EMPLOYEE1;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  9 | Sinthura |  27 | F      |  40000 | Lead              | ECE        |          2 |
+| 11 | Sunil    |  50 | M      |  70000 | TESTER            | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
+| 15 | Siddarth |  45 | M      |  50000 | VP                | CSE        |          4 |
+| 16 | Matthew  |  45 | M      |  50000 | developer         | CSE        |          4 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+
+
+=======================================
+REPLACE
+========
+
+mysql> REPLACE INTO EMPLOYEE1 VALUES(9,'Anil',45,'M',34567,'vp','IT',1);
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> SELECT * FROM EMPLOYEE1;
++----+----------+-----+--------+--------+-------------------+------------+------------+
+| ID | NAME     | AGE | GENDER | SALARY | DESIGNATION       | DEPARTMENT | COUNTRY_ID |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+|  3 | Kumar    |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+|  4 | Selvam   |  28 | M      |  25000 | Software Engineer | ECE        |          2 |
+|  6 | Solvin   |  29 | M      |  30000 | Developer         | IT         |          2 |
+|  9 | Anil     |  45 | M      |  34567 | vp                | IT         |          1 |
+| 11 | Sunil    |  50 | M      |  70000 | TESTER            | CSE        |          2 |
+| 12 | Kelvin   |  25 | M      |  20000 | ADMIN             | IT         |          1 |
+| 13 | Melvin   |  25 | M      |  20000 | Manager           | IT         |          2 |
+| 15 | Siddarth |  45 | M      |  50000 | VP                | CSE        |          4 |
+| 16 | Matthew  |  45 | M      |  50000 | developer         | CSE        |          4 |
++----+----------+-----+--------+--------+-------------------+------------+------------+
+9 rows in set (0.00 sec)
+
+
+===========================================================
+VIEW
+=================================
+//CREATE
+mysql> CREATE VIEW DEPT_WISE_EMP_COUNT AS SELECT DEPARTMENT,COUNT(*) FROM EMPLOYEES GROUP BY DEPARTMENT;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM DEPT_WISE_EMP_COUNT;
++------------+----------+
+| DEPARTMENT | COUNT(*) |
++------------+----------+
+| CSE        |        3 |
+| ECE        |        2 |
+| IT         |        4 |
++------------+----------+
+3 rows in set (0.00 sec)
+
+
+//DELETE
+
+mysql> DROP VIEW DEPT_WISE_EMP_COUNT;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT * FROM DEPT_WISE_EMP_COUNT;
+ERROR 1146 (42S02): Table 'test_training.dept_wise_emp_count' doesn't exist
+
+
+==================================
+C:\Users\BindushreeN>mysql -u root -p <C:\mysqleg\mysqlsampledatabase.sql 

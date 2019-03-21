@@ -1,0 +1,73 @@
+names starting with S
+
+mysql> SELECT NAME FROM EMPLOYEES WHERE NAME LIKE 'S%';
++----------+
+| NAME     |
++----------+
+| Selvam   |
+| Solvin   |
+| Siddarth |
+| Sinthura |
+| Sunil    |
++----------+
+
+
+mysql> SELECT  MAX(SALARY) AS SALARY FROM EMPLOYEES;
++--------+
+| SALARY |
++--------+
+|  70000 |
++--------+
+1 row in set (0.00 sec)
+
+mysql> SELECT  MAX(SALARY),COUNT(*) AS SALARY FROM EMPLOYEES;
++-------------+--------+
+| MAX(SALARY) | SALARY |
++-------------+--------+
+|       70000 |      7 |
++-------------+--------+
+1 row in set (0.00 sec)
+
+mysql> SELECT  MAX(SALARY) AS SALARY FROM EMPLOYEES ORDER BY NAME;
++--------+
+| SALARY |
++--------+
+|  70000 |
++--------+
+1 row in set (0.00 sec)
+
+mysql> SELECT NAME FROM EMPLOYEES WHERE SALARY > 25000;
++----------+
+| NAME     |
++----------+
+| Solvin   |
+| Siddarth |
+| Mathes   |
+| Sinthura |
+| Sunil    |
++----------+
+
+
+
+mysql> SELECT DESIGNATION,COUNT(*) AS 'EMPLOYEE COUNT' FROM EMPLOYEES GROUP BY DESIGNATION;
++-------------------+----------------+
+| DESIGNATION       | EMPLOYEE COUNT |
++-------------------+----------------+
+| Developer         |              1 |
+| Function Head     |              1 |
+| Lead              |              1 |
+| Manager           |              1 |
+| President         |              1 |
+| Software Engineer |              1 |
+| VP                |              1 |
+
+
+mysql> SELECT DEPARTMENT,AVG(SALARY) AS 'SALARY' FROM EMPLOYEES GROUP BY DEPARTMENT;
++------------+--------------------+
+| DEPARTMENT | SALARY             |
++------------+--------------------+
+| CSE        |              60000 |
+| ECE        |              32500 |
+| IT         | 36666.666666666664 |
+
+

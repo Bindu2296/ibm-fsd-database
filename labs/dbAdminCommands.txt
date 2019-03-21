@@ -1,0 +1,31 @@
+CREATE USER 'ibmfsd'@'localhost' IDENTIFIED BY 'ibmfsd';
+GRANT ALL PRIVILEGES ON mysql_training.* TO 'ibmfsd'@'localhost' WITH GRANT OPTION; //grnting all privilages to all tables in the mysql_training database.  
+REVOKE ALL PRIVILEGES ON mysql_training.* FROM 'ibmfsd'@'localhost';   //revoking all privilages to all tables in the mysql_training database. 
+
+NOTE: revoke access shud match with the grant...i.e now, int the above example, since grant privilage is for all, we cant revoke only one operation...like eg: revoke select on/ revoke update on.... We have to revoke all.  
+
+//ONLY "SELECT" PRIVILAGE to only "employees" table in mysql_training dB.
+
+mysql> GRANT SELECT ON mysql_training.employees TO 'ibmfsd'@'localhost' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+// to revoke this grant option
+
+the 1st 2 commands wont revoke, since we have given permission to "employees" table specifically and tryna revoke from all tables...
+mysql> REVOKE ALL PRIVILEGES ON mysql_training.* FROM 'ibmfsd'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> REVOKE select ON mysql_training.* FROM 'ibmfsd'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+//the below query is the correct revoke for the grant ====> GRANT SELECT ON mysql_training.employees TO 'ibmfsd'@'localhost' WITH GRANT OPTION;
+
+mysql> REVOKE select ON mysql_training.employees FROM 'ibmfsd'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+
+//TO CREATE A BACKUP
+C:\Users\BindushreeN\Desktop\mysql-5.7.25-winx64\bin>mysqldump -u root -p mysql_training>C:\mysqleg\mysql_training_bkp.sql
+
+//BACKUP RESTORED TO NEW DB
+C:\>mysql -u root -p --database=test_training <C:\mysqleg\mysql_training_bkp.sql
