@@ -146,7 +146,7 @@ assignment ==SQL Day 2
 4. mysql> Select E.firstName,sum(P.amount) from Employees E join Employees F on E.EmployeeNumber=F.reportsTo
 	join Customers C on C.salesRepEmployeeNumber=F.EmployeeNumber
 	join Payments P on P.customerNumber=C.customerNumber group by E.firstName order by sum(P.amount) desc;
-	select department from employee e join country c on e.country_id=c.country_id where e.name like "da%" and count(select
+	
 
 
 
